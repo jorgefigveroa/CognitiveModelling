@@ -19,21 +19,16 @@ def process_images(input_dir: Path, output_dir: Path) -> None:
         if image_path.suffix.lower() not in IMAGE_EXTENSIONS:
             continue
         img = Image.open(image_path).convert("L")
-        img = img.resize((28, 28))
         img.save(output_dir / image_path.name)
         print(f"Saved: {image_path.name}")
 
 
 if __name__ == "__main__":
+    GREY_DIR.mkdir(parents=True, exist_ok=True)
     for age, folder_id in FOLDERS.items():
         url = f"https://drive.google.com/drive/folders/{folder_id}"
-        out_dir = GREY_DIR / age
-        if out_dir.exists() and any(out_dir.iterdir()):
-            print(f"Skipping {age} — already processed.")
-            continue
         print(f"\nProcessing age {age}...")
         with tempfile.TemporaryDirectory() as tmp:
             gdown.download_folder(url, output=tmp, quiet=False)
-            process_images(Path(tmp), out_dir)
-        print(f"Age {age} done: {len(list(out_dir.iterdir()))} images saved.")
-    print(f"\nAll done. Images in {GREY_DIR}")
+            process_images(Path(tmp), GREY_DIR)
+    print(f"\nAll done. {len(list(GREY_DIR.iterdir()))} images in {GREY_DIR}")
