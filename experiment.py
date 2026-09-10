@@ -5,7 +5,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 
 
-images_folder="grayscale_images"
+images_folder="images/greyscale"
 results_folder="results"
 participant_id = input("Enter student name: ")
 os.makedirs(results_folder, exist_ok=True)
