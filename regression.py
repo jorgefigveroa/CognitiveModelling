@@ -29,11 +29,7 @@ PCA_SCORES_FILE = PCA_DIR / "pca_scores_48.csv"
 
 N_SPLITS = 5
 
-
-# --------------------------------------------------
 # 1. Load PCA scores
-# --------------------------------------------------
-
 pca_scores = pd.read_csv(PCA_SCORES_FILE)
 
 pca_scores["filename"] = (
@@ -52,10 +48,7 @@ print(f"Loaded {len(pca_scores)} images")
 print(f"Using {len(pc_columns)} candidate PCs")
 
 
-# --------------------------------------------------
 # 2. Load participant ratings
-# --------------------------------------------------
-
 all_ratings = []
 
 for participant, csv_path in RATING_FILES.items():
@@ -86,46 +79,9 @@ for participant, csv_path in RATING_FILES.items():
         f"min={rating_min}, max={rating_max}, "
         f"n={len(ratings_raw)}"
     )
-
-    # --------------------------------------------------
-    # Normalise only if participant did not use
-    # the full 1-5 scale
-    # --------------------------------------------------
-
-    if rating_min > 1 or rating_max < 5:
-
-        print(
-            f"  -> {participant} did not use the full scale. "
-            "Applying min-max normalisation to 1-5."
-        )
-
-        if rating_max == rating_min:
-            raise ValueError(
-                f"{participant} used only one rating value; "
-                "cannot min-max normalise."
-            )
-
-        for column in ["rating_1", "rating_2"]:
-
-            df[column] = (
-                1
-                + 4
-                * (df[column] - rating_min)
-                / (rating_max - rating_min)
-            )
-
-    else:
-        print(
-            f"  -> {participant} used the full 1-5 scale. "
-            "No normalisation applied."
-        )
-
     # Convert from:
-    #
     # filename | rating_1 | rating_2
-    #
     # to:
-    #
     # filename | repetition | rating
     #
     long_df = df.melt(
@@ -147,11 +103,7 @@ ratings = pd.concat(
 
 print(f"\nTotal rating observations: {len(ratings)}")
 
-
-# --------------------------------------------------
 # 3. Plot raw/processed rating histograms
-# --------------------------------------------------
-
 for participant in RATING_FILES:
 
     participant_ratings = ratings.loc[
@@ -182,10 +134,7 @@ for participant in RATING_FILES:
     plt.close()
 
 
-# --------------------------------------------------
 # 4. Match ratings to PCA scores
-# --------------------------------------------------
-
 rating_filenames = set(ratings["filename"])
 pca_filenames = set(pca_scores["filename"])
 
@@ -213,11 +162,7 @@ data = ratings.merge(
 print(f"\nMatched observations: {len(data)}")
 print(f"Unique images matched: {data['filename'].nunique()}")
 
-
-# --------------------------------------------------
 # 5. Prepare regression variables
-# --------------------------------------------------
-
 X = data[pc_columns].to_numpy()
 y = data["rating"].to_numpy()
 
@@ -226,11 +171,7 @@ y = data["rating"].to_numpy()
 # cannot appear in both training and validation data.
 groups = data["filename"].to_numpy()
 
-
-# --------------------------------------------------
 # 6. Cross-validation helpers
-# --------------------------------------------------
-
 def baseline_cv_mse(y, groups):
     """
     Cross-validated MSE for a model that predicts only
@@ -304,10 +245,7 @@ def cv_mse_for_features(feature_indices):
     return np.mean(fold_errors)
 
 
-# --------------------------------------------------
 # 7. Forward selection
-# --------------------------------------------------
-
 selected = []
 remaining = list(range(len(pc_columns)))
 
@@ -384,9 +322,7 @@ print("\nSelected PCs:")
 print(selected_pc_names)
 
 
-# --------------------------------------------------
 # 8. Fit final model to all observations
-# --------------------------------------------------
 
 X_final = X[:, selected]
 
@@ -428,11 +364,7 @@ print(
     f"{training_r2:.4f}"
 )
 
-
-# --------------------------------------------------
 # 9. Save forward-selection results
-# --------------------------------------------------
-
 history_df = pd.DataFrame(history)
 
 history_df.to_csv(
@@ -440,28 +372,25 @@ history_df.to_csv(
     index=False
 )
 
-
-coefficients = pd.DataFrame({
+coefficient_table = pd.DataFrame({
     "PC": selected_pc_names,
     "coefficient": final_model.coef_
 })
 
-coefficients.to_csv(
-    REGRESSION_DIR / "selected_pcs.csv",
+print("\nSelected PC coefficients:")
+print(coefficient_table)
+
+coefficient_table.to_csv(
+    REGRESSION_DIR / "selected_pc_coefficients.csv",
     index=False
 )
-
 
 # Save matched data for transparency/checking
 data.to_csv(
     REGRESSION_DIR / "model_data.csv",
     index=False
 )
-
-
-# --------------------------------------------------
 # 10. Save model for synthetic-face generation
-# --------------------------------------------------
 
 np.savez(
     REGRESSION_DIR / "linear_model.npz",
@@ -469,7 +398,6 @@ np.savez(
     coefficients=final_model.coef_,
     intercept=np.array([final_model.intercept_])
 )
-
 
 print(
     f"\nRegression results saved to "
