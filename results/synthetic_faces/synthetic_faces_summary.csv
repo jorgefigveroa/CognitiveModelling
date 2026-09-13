@@ -1,0 +1,8 @@
+metric,value
+intercept,2.7357881136950906
+number_of_selected_pcs,24
+predicted_min_original_faces,1.2222836367529462
+predicted_max_original_faces,4.224143302744661
+requested_min,0.5
+requested_max,5.5
+requested_range_outside_observed,True
