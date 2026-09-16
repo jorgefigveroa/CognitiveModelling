@@ -2,6 +2,7 @@
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from PIL import Image
 from sklearn.decomposition import PCA
@@ -197,7 +198,6 @@ for pc_index in range(number_of_pcs_to_show):
     )
     plt.show()
     
-import pandas as pd
 N_PCS_FOR_MODEL = 48
 
 pca_scores = pd.DataFrame(

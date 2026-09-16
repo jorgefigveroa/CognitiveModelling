@@ -1,0 +1,8 @@
+metric,value
+predicted_min_training,1.2222836367529557
+predicted_max_training,4.22414330274465
+original_stimuli_min,0.5
+original_stimuli_max,5.5
+deviation_low_end,0.7222836367529557
+deviation_high_end,1.2758566972553496
+new_faces_generated,11.0
