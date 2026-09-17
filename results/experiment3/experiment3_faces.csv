@@ -1,0 +1,6 @@
+type,filename,target_rating
+adapter_low,face_1p22.png,1.2222836367529557
+test,face_2p42.png,2.4230275031496333
+test,face_2p72.png,2.723213469748803
+test,face_3p02.png,3.0233994363479724
+adapter_high,face_4p22.png,4.22414330274465

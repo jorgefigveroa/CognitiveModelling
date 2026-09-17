@@ -1,0 +1,78 @@
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+
+results_folder = "results"
+
+csv_files = [
+    filename
+    for filename in os.listdir(results_folder)
+    if filename.endswith(".csv")
+]
+
+print(f"{len(csv_files)} participants found.\n")
+
+
+for filename in csv_files:
+
+    participant = os.path.splitext(filename)[0]
+
+    path = os.path.join(results_folder, filename)
+
+    data = pd.read_csv(path)
+
+    ratings = pd.concat([
+        data["rating_1"],
+        data["rating_2"]
+    ])
+
+   
+    minimum = ratings.min()
+    maximum = ratings.max()
+
+    print(f"Participant: {participant}")
+    print(f"Minimum rating: {minimum}")
+    print(f"Maximum rating: {maximum}")
+    # normalize in case the participant did not use the full range
+    if minimum == 1 and maximum == 5:
+        print("Full rating range was used.")
+        normalized_ratings = ratings
+
+    else:
+        print("Full rating range was NOT used.")
+        print("Applying min-max normalization.")
+
+        normalized_ratings = (
+            1
+            + 4 * (ratings - minimum)
+            / (maximum - minimum)
+        )
+
+    print()
+
+
+
+    plt.figure(figsize=(7, 5))
+
+    plt.hist(
+        normalized_ratings,
+        bins=[0.5, 1.5, 2.5, 3.5, 4.5, 5.5],
+        edgecolor="black"
+    )
+
+    plt.xticks([1, 2, 3, 4, 5])
+
+    plt.xlabel("Rating")
+    plt.ylabel("Frequency")
+    plt.title(f"Rating distribution - {participant}")
+
+    plt.tight_layout()
+
+    histogram_path = os.path.join(
+        results_folder,
+        f"{participant}_histogram.png"
+    )
+
+    plt.savefig(histogram_path)
+
+    plt.show()
