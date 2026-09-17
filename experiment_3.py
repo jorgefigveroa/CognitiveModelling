@@ -6,9 +6,7 @@ import pandas as pd
 from PIL import Image, ImageTk, ImageDraw
 
 
-# --------------------------------------------------
-# Files and folders
-# --------------------------------------------------
+
 
 # Folder containing synthetic faces from Part 6
 faces_folder = "results/synthetic_faces_6/faces"
@@ -22,16 +20,9 @@ results_folder = "results/experiment3"
 os.makedirs(results_folder, exist_ok=True)
 
 
-# --------------------------------------------------
-# Participant
-# --------------------------------------------------
-
 participant_id = input("Enter student name: ")
 
 
-# --------------------------------------------------
-# Load the 5 selected faces
-# --------------------------------------------------
 
 faces = pd.read_csv(selected_faces_file)
 
@@ -77,9 +68,7 @@ random.shuffle(trials)
 print("\nNumber of trials:", len(trials))
 
 
-# --------------------------------------------------
-# Store results
-# --------------------------------------------------
+
 
 results = []
 
@@ -115,18 +104,13 @@ progress_label = tk.Label(
 progress_label.pack(pady=10)
 
 
-# --------------------------------------------------
-# Variables
-# --------------------------------------------------
+
 
 current_trial = 0
 current_photo = None
 waiting_for_rating = False
 
 
-# --------------------------------------------------
-# Function to show an image
-# --------------------------------------------------
 
 def show_image(filename):
 
@@ -147,10 +131,6 @@ def show_image(filename):
     # Resize image if needed
     image.thumbnail((800, 550))
 
-
-    # --------------------------------------------------
-    # Add fixation cross
-    # --------------------------------------------------
 
     draw = ImageDraw.Draw(image)
 
@@ -229,9 +209,6 @@ def start_trial():
     )
 
 
-# --------------------------------------------------
-# Show the test face
-# --------------------------------------------------
 
 def show_test_face():
 
@@ -250,9 +227,6 @@ def show_test_face():
     )
 
 
-# --------------------------------------------------
-# Remove test face and ask for rating
-# --------------------------------------------------
 
 def ask_for_rating():
 
@@ -273,9 +247,6 @@ def ask_for_rating():
     waiting_for_rating = True
 
 
-# --------------------------------------------------
-# Record rating
-# --------------------------------------------------
 
 def record_rating(event):
 
@@ -283,8 +254,7 @@ def record_rating(event):
     global waiting_for_rating
 
 
-    # Ignore keyboard presses if we are
-    # not currently asking for a rating
+ 
     if waiting_for_rating == False:
         return
 
@@ -297,7 +267,6 @@ def record_rating(event):
         return
 
 
-    # Get information about current trial
     adapting_face = trials[current_trial][0]
     test_face = trials[current_trial][1]
 
@@ -327,10 +296,6 @@ def record_rating(event):
 
         finish_experiment()
 
-
-# --------------------------------------------------
-# Finish experiment and save results
-# --------------------------------------------------
 
 def finish_experiment():
 
@@ -378,9 +343,6 @@ def finish_experiment():
     root.unbind("<Key>")
 
 
-# --------------------------------------------------
-# Keyboard
-# --------------------------------------------------
 
 root.bind(
     "<Key>",
