@@ -43,19 +43,25 @@ trial_counters = {f: 0 for f in image_files}
 
 root = tk.Tk()
 root.title("Experiment 2 – Synthetic Face Rating")
-root.geometry("900x700")
+root.configure(bg="white")
+root.attributes("-fullscreen", True)
 
-image_label = tk.Label(root)
+screen_w = root.winfo_screenwidth()
+screen_h = root.winfo_screenheight()
+
+image_label = tk.Label(root, bg="white")
 image_label.pack(expand=True)
 
 instruction_label = tk.Label(
     root,
-    text="Rate the image from 1 to 5",
-    font=("Arial", 18)
+    text="",
+    font=("Arial", 18),
+    bg="white",
+    fg="black"
 )
 instruction_label.pack(pady=10)
 
-progress_label = tk.Label(root, text="", font=("Arial", 12))
+progress_label = tk.Label(root, text="", font=("Arial", 12), bg="white", fg="black")
 progress_label.pack(pady=10)
 
 current_trial = 0
@@ -68,13 +74,12 @@ def show_image():
     filename = trials[current_trial]
     path = IMAGES_FOLDER / filename
     image = Image.open(path)
-    image.thumbnail((800, 550))
+    image.thumbnail((screen_w - 100, screen_h - 150))
     current_photo = ImageTk.PhotoImage(image)
 
     image_label.config(image=current_photo)
-    progress_label.config(
-        text=f"Trial {current_trial + 1} of {len(trials)}"
-    )
+    progress_label.config(text=f"Trial {current_trial + 1} of {len(trials)}")
+    instruction_label.config(text="Rate the image from 1 to 5")
 
 
 def record_rating(event):
@@ -108,5 +113,6 @@ def finish_experiment():
 
 
 root.bind("<Key>", record_rating)
+root.bind("<Escape>", lambda e: root.attributes("-fullscreen", False))
 show_image()
 root.mainloop()

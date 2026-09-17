@@ -81,17 +81,20 @@ root = tk.Tk()
 
 root.title("Experiment 3")
 
-root.geometry("900x700")
+root.configure(bg="white")
+root.geometry("1400x950")
 
 
-image_label = tk.Label(root)
+image_label = tk.Label(root, bg="white")
 image_label.pack(expand=True)
 
 
 instruction_label = tk.Label(
     root,
     text="",
-    font=("Arial", 18)
+    font=("Arial", 18),
+    bg="white",
+    fg="black"
 )
 instruction_label.pack(pady=10)
 
@@ -99,7 +102,9 @@ instruction_label.pack(pady=10)
 progress_label = tk.Label(
     root,
     text="",
-    font=("Arial", 12)
+    font=("Arial", 12),
+    bg="white",
+    fg="black"
 )
 progress_label.pack(pady=10)
 
@@ -109,6 +114,7 @@ progress_label.pack(pady=10)
 current_trial = 0
 current_photo = None
 waiting_for_rating = False
+
 
 
 
@@ -129,7 +135,7 @@ def show_image(filename):
     image = image.convert("RGB")
 
     # Resize image if needed
-    image.thumbnail((800, 550))
+    image.thumbnail((1300, 800))
 
 
     draw = ImageDraw.Draw(image)
@@ -188,9 +194,7 @@ def start_trial():
     adapting_face = trials[current_trial][0]
 
 
-    instruction_label.config(
-        text="Look at the fixation cross"
-    )
+    instruction_label.config(text="Look at the fixation cross")
 
 
     progress_label.config(
@@ -238,9 +242,7 @@ def ask_for_rating():
 
 
     # Ask participant
-    instruction_label.config(
-        text="Rate the face from 1 to 5"
-    )
+    instruction_label.config(text="Rate the face from 1 to 5")
 
 
     # Now keyboard responses are allowed
@@ -329,9 +331,7 @@ def finish_experiment():
 
 
     # Show final message
-    instruction_label.config(
-        text="Experiment complete. Thank you!"
-    )
+    instruction_label.config(text="Experiment complete. Thank you!")
 
 
     progress_label.config(
@@ -339,15 +339,13 @@ def finish_experiment():
     )
 
 
-    # Stop accepting keyboard responses
+    # Stop accepting keyboard responses and close after 3 seconds
     root.unbind("<Key>")
+    root.after(3000, root.destroy)
 
 
 
-root.bind(
-    "<Key>",
-    record_rating
-)
+root.bind("<Key>", record_rating)
 
 
 # --------------------------------------------------
