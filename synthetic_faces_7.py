@@ -101,7 +101,8 @@ for ax, participant in zip(axes, participants):
     )
     ax.set_xlabel("Predicted rating")
     ax.set_ylabel("Participant rating (1–5)")
-    ax.set_title(f"{participant}\nSpearman ρ = {rho:.3f}  (p = {pval:.3f})")
+    p_str = "p < 0.001" if pval < 0.001 else f"p = {pval:.3f}"
+    ax.set_title(f"{participant}\nSpearman ρ = {rho:.3f}  ({p_str})")
     ax.set_ylim(0.5, 5.5)
     ax.set_yticks([1, 2, 3, 4, 5])
 
